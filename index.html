@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A Question For You</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: radial-gradient(circle at center, #120018, #000);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: white;
+        }
+
+        /* Floating cinematic particles */
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 15s linear infinite;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(100vh);
+            }
+
+            to {
+                transform: translateY(-10vh);
+            }
+        }
+
+        .card {
+            text-align: center;
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 50px rgba(255, 0, 128, 0.25);
+            width: 90%;
+            max-width: 420px;
+            animation: fadeIn 2s ease forwards;
+            opacity: 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        h1 {
+            font-weight: 500;
+            margin-bottom: 25px;
+        }
+
+        button {
+            padding: 12px 24px;
+            margin: 10px;
+            font-size: 16px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        #yesBtn {
+            background: linear-gradient(45deg, #ff4d6d, #ff85a2);
+            color: white;
+            box-shadow: 0 0 15px rgba(255, 77, 109, 0.7);
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.1);
+        }
+
+        #noBtn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            position: absolute;
+        }
+
+        #message,
+        #finalScene {
+            margin-top: 20px;
+            font-size: 18px;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        #photo {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-top: 15px;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 1.5s ease;
+            box-shadow: 0 0 25px rgba(255, 105, 180, 0.6);
+        }
+
+        /* Flash */
+        .flash {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: white;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Movie credits */
+        #credits {
+            position: fixed;
+            bottom: -100px;
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+            opacity: 0;
+            transition: all 4s ease;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="flash" id="flash"></div>
+
+    <div class="card">
+        <h1>From the moment I met you…<br>everything felt different.<br><br>Gazal, will you be my Valentine? <br>(try
+            pressing NO 🤭) 💫</h1>
+        <button id="yesBtn">Yes</button>
+        <button id="noBtn">No</button>
+
+        <div id="message">You just made this the best love story ever 💖</div>
+        <img id="photo"
+            src="https://lh3.googleusercontent.com/pw/AP1GczNnEvZm9063FPbliw4K1YJ2SgC99HqHB1FFwjXKmIf-8IBI4z6Csr1A28hViNmqXcyOawqAvxMX6bxyOYVYWGbWek7P1OoViBVk6MhjpKF6438k1oYdf5XZB1SEYB42qMe4cov3ZP0UesEx7gldhrg=w728-h970-s-no-gm?authuser=0"
+            alt="Her Photo" />
+        <div id="finalScene">See you on Valentine’s, love. 💌</div>
+    </div>
+
+    <div id="credits">A Love Story By <b>DHYAN</b></div>
+
+    <!-- Background Music -->
+    <audio id="bgMusic" src="https://archive.org/details/perfect-ed-sheeran/1.+7034051636267863297.mp4" loop></audio>
+
+
+    <script>
+        const noBtn = document.getElementById("noBtn");
+        const yesBtn = document.getElementById("yesBtn");
+        const message = document.getElementById("message");
+        const photo = document.getElementById("photo");
+        const finalScene = document.getElementById("finalScene");
+        const flash = document.getElementById("flash");
+        const credits = document.getElementById("credits");
+        const bgMusic = document.getElementById("bgMusic");
+        const card = document.querySelector(".card");
+
+        /* Particles */
+        function createParticle() {
+            const p = document.createElement("div");
+            p.classList.add("particle");
+            p.style.left = Math.random() * 100 + "vw";
+            p.style.animationDuration = (Math.random() * 10 + 10) + "s";
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 20000);
+        }
+        setInterval(createParticle, 300);
+
+        /* No button runs away */
+        function moveButton() {
+            const rect = card.getBoundingClientRect();
+            const maxX = rect.width - noBtn.offsetWidth;
+            const maxY = rect.height - noBtn.offsetHeight;
+
+            noBtn.style.left = Math.random() * maxX + "px";
+            noBtn.style.top = Math.random() * maxY + "px";
+        }
+        noBtn.addEventListener("mouseenter", moveButton);
+        noBtn.addEventListener("click", moveButton);
+        noBtn.addEventListener("touchstart", (e) => {
+            e.preventDefault();
+            moveButton();
+        });
+
+        /* YES = MOVIE MOMENT */
+        yesBtn.addEventListener("click", () => {
+            bgMusic.play();
+
+            flash.style.opacity = "0.9";
+            setTimeout(() => flash.style.opacity = "0", 400);
+
+            yesBtn.style.display = "none";
+            noBtn.style.display = "none";
+
+            setTimeout(() => message.style.opacity = "1", 500);
+            setTimeout(() => {
+                photo.style.opacity = "1";
+                photo.style.transform = "scale(1)";
+            }, 2000);
+            setTimeout(() => finalScene.style.opacity = "1", 4000);
+
+            setTimeout(() => {
+                credits.style.opacity = "1";
+                credits.style.bottom = "40px";
+            }, 6000);
+        });
+    </script>
+
+</body>
+
+</html>
